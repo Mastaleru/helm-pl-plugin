@@ -169,10 +169,10 @@ function deploySmartContracts(accountInfo, config, callback) {
     const web3 = new Web3('http://127.0.0.1:8545'); // your geth
     const contractsInfo = compileSmartContracts(config, contracts);
     const contractsAbiAndAddress = {};
-    const __deploySmartContractsSequentially = (index) => {
+    const __deploySmartContractsSequentially = (index, childProcess) => {
         const contract = contracts[index];
         if (typeof contract === "undefined") {
-            //process.kill(-childProcess.pid);
+            process.kill(-childProcess.pid);
             return callback(undefined, contractsAbiAndAddress);
         }
 
@@ -185,16 +185,16 @@ function deploySmartContracts(accountInfo, config, callback) {
                 abi: JSON.stringify(contractsInfo[contract].abi),
                 address: scAddress
             }
-            __deploySmartContractsSequentially(index + 1);
+            __deploySmartContractsSequentially(index + 1, childProcess);
         })
     }
 
-//    portForward(config, (err, childProcess) => {
-//        if (err) {
-//            return callback(err);
-//        }
-        __deploySmartContractsSequentially(0);
-//    })
+    portForward(config, (err, childProcess) => {
+        if (err) {
+            return callback(err);
+        }
+        __deploySmartContractsSequentially(0, childProcess);
+    })
 }
 
 function deploySmartContractsAndStoreInfo(config) {
