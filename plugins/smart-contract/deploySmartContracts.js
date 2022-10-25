@@ -189,12 +189,12 @@ function deploySmartContracts(accountInfo, config, callback) {
         })
     }
 
-    portForward(config, (err, childProcess) => {
-        if (err) {
-            return callback(err);
-        }
+//    portForward(config, (err, childProcess) => {
+//        if (err) {
+//            return callback(err);
+//        }
         __deploySmartContractsSequentially(0, childProcess);
-    })
+//    })
 }
 
 function deploySmartContractsAndStoreInfo(config) {
